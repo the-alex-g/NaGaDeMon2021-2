@@ -140,162 +140,177 @@ void displayInformation() { // displays the how to play information
 
 int main () {
 
-    std::cout << "\n" << bold << green << "G" << gray << "oblin Mines\n" << white << std::flush; // display title for 2 sec
+    clearScreen();
+    std::cout << bold << green << "G" << gray << "oblin Mines\n" << white << std::flush; // display title for 2 sec
     usleep(2000000);
 
     displayInformation(); // show info so player knows what to do
     
     srand(time(NULL)); // seed randomizer
 
-    std::vector<std::vector<std::string>> field = generateField(); // the entire field
-    std::vector<std::vector<std::string>> knownField = generateBlankField(); // the field displayed
-
     bool isRunning = true; // while game is running
-    std::pair<int,int> position = {rand()%10, rand()%10}; // random start point
-
-    while (field[position.second][position.first] == ogre) { // make sure player does not start on an ogre
-        position.first = rand()%10;
-        position.second = rand()%10;
-    }
-
-    int goblinsFound = 0;
-    int teleportsRemaining = 2;
-
-    knownField[position.second][position.first] = field[position.second][position.first]; // put the player's start location on the known field
-    updateField(knownField, position, false); // draw starting field
     
-    if (searchForOgres(field, position)) { // so the player knows if they start near an ogre
-        std::cout << "There is an ogre nearby! ";
-    }
-
-    bool isTeleporting = false;
-
     while (isRunning) {
+        std::vector<std::vector<std::string>> field = generateField(); // the entire field
+        std::vector<std::vector<std::string>> knownField = generateBlankField(); // the field displayed
 
-        std::pair<int, int> difference = {0,0};
-        bool justTeleported = false;
-        std::string endMessage = "";
+        bool isGameOver = false;
 
-        std::string newInput;
+        std::pair<int,int> position = {rand()%10, rand()%10}; // random start point
 
-        std::cin >> newInput;
-
-        if (newInput == "exit") { // quit
-            endMessage = "You have terminated the program.";
-            isRunning = false;
-        } else if (newInput == "a") { // move left
-            if (isTeleporting == false && position.first > 0) {
-                difference.first = -1;
-            } else if (isTeleporting && position.first > 1) {
-                difference.first = -2;
-                isTeleporting = false;
-                justTeleported = true;
-            }
-        } else if (newInput == "d") { // move right
-            if (isTeleporting == false && position.first < fieldSize-1) {
-                difference.first = 1;
-            } else if (isTeleporting && position.first < fieldSize-2) {
-                difference.first = 2;
-                isTeleporting = false;
-                justTeleported = true;
-            }
-        } else if (newInput == "s") { // move down
-            if (isTeleporting == false && position.second < fieldSize-1) {
-                difference.second = 1;
-            } else if (isTeleporting && position.second < fieldSize-2) {
-                difference.second = 2;
-                isTeleporting = false;
-                justTeleported = true;
-            }
-        } else if (newInput == "w") { // move up
-            if (isTeleporting == false && position.second > 0) {
-                difference.second = -1;
-            } else if (isTeleporting && position.second > 1) {
-                difference.second = -2;
-                isTeleporting = false;
-                justTeleported = true;
-            }
-        } else if (newInput == "i") { // display information
-            displayInformation();
-        } else if (newInput == "t") { // initiate teleport
-            if (teleportsRemaining > 0) {
-               teleportsRemaining--;
-               isTeleporting = true;
-            } else {
-                endMessage = "You have already used both your teleports! ";
-            }
+        while (field[position.second][position.first] == ogre) { // make sure player does not start on an ogre
+            position.first = rand()%10;
+            position.second = rand()%10;
         }
 
-        position.second += difference.second;
-        position.first += difference.first;
+        int goblinsFound = 0;
+        int teleportsRemaining = 2;
 
-        std::string spaceContains = field[position.second][position.first];
+        knownField[position.second][position.first] = field[position.second][position.first]; // put the player's start location on the known field
+        updateField(knownField, position, false); // draw starting field
+        
+        if (searchForOgres(field, position)) { // so the player knows if they start near an ogre
+            std::cout << "There is an ogre nearby! ";
+        }
 
-        if (spaceContains == goblin) {
-            goblinsFound++;
-            field[position.second][position.first] = empty;
-            if (goblinsFound == totalGoblins) {
-                endMessage = "You win!";
+        bool isTeleporting = false;
+
+        while (!isGameOver) {
+
+            std::pair<int, int> difference = {0,0};
+            bool justTeleported = false;
+            std::string endMessage = "";
+
+            std::string newInput;
+
+            std::cin >> newInput;
+
+            if (newInput == "exit") { // quit
+                endMessage = "You have terminated the program.";
+                isRunning = false;
+                isGameOver = true;
+            } else if (newInput == "a") { // move left
+                if (isTeleporting == false && position.first > 0) {
+                    difference.first = -1;
+                } else if (isTeleporting && position.first > 1) {
+                    difference.first = -2;
+                    isTeleporting = false;
+                    justTeleported = true;
+                }
+            } else if (newInput == "d") { // move right
+                if (isTeleporting == false && position.first < fieldSize-1) {
+                    difference.first = 1;
+                } else if (isTeleporting && position.first < fieldSize-2) {
+                    difference.first = 2;
+                    isTeleporting = false;
+                    justTeleported = true;
+                }
+            } else if (newInput == "s") { // move down
+                if (isTeleporting == false && position.second < fieldSize-1) {
+                    difference.second = 1;
+                } else if (isTeleporting && position.second < fieldSize-2) {
+                    difference.second = 2;
+                    isTeleporting = false;
+                    justTeleported = true;
+                }
+            } else if (newInput == "w") { // move up
+                if (isTeleporting == false && position.second > 0) {
+                    difference.second = -1;
+                } else if (isTeleporting && position.second > 1) {
+                    difference.second = -2;
+                    isTeleporting = false;
+                    justTeleported = true;
+                }
+            } else if (newInput == "i") { // display information
+                displayInformation();
+            } else if (newInput == "t") { // initiate teleport
+                if (teleportsRemaining > 0) {
+                teleportsRemaining--;
+                isTeleporting = true;
+                } else {
+                    endMessage = "You have already used both your teleports! ";
+                }
+            }
+
+            position.second += difference.second;
+            position.first += difference.first;
+
+            std::string spaceContains = field[position.second][position.first];
+
+            if (spaceContains == goblin) {
+                goblinsFound++;
+                field[position.second][position.first] = empty;
+                if (goblinsFound == totalGoblins) {
+                    endMessage = "You win!";
+                    isGameOver = true;
+                }
+            } else if (spaceContains == ogre || knownField[position.second][position.first] == ogre) {
+                endMessage = "You have hit an ogre.";
+                isGameOver = true;
+            }
+
+            if (knownField[position.second][position.first] == " ") { // add the space moved onto to the map
+                knownField[position.second][position.first] = spaceContains;
+            }
+
+            for (int o = 0; o < totalOgres; o++) { // displays ogres on the screen when all four sides are surrounded.
+                int ogreX = ogresX[o];
+                int ogreY = ogresY[o];
+                int sidesFound = 0;
+                int boardEdgesTouching = 0;
+                if (ogreX < fieldSize-1 && (knownField[ogreY][ogreX+1] != " " || field[ogreY][ogreX+1] == ogre)) {
+                    sidesFound++;
+                } if (ogreX > 0 && (knownField[ogreY][ogreX-1] != " " || field[ogreY][ogreX-1] == ogre)) {
+                    sidesFound++;
+                } if (ogreY < fieldSize-1 && (knownField[ogreY+1][ogreX] != " " || field[ogreY+1][ogreX] == ogre)) {
+                    sidesFound++;
+                } if (ogreY > 0 && (knownField[ogreY-1][ogreX] != " " || field[ogreY-1][ogreX] == ogre)) {
+                    sidesFound++;
+                }
+                if (ogreY == 0) {
+                    boardEdgesTouching++;
+                } if (ogreY == fieldSize-1) {
+                    boardEdgesTouching++;
+                } if (ogreX == 0) {
+                    boardEdgesTouching++;
+                } if (ogreX == fieldSize-1) {
+                    boardEdgesTouching++;
+                }
+                if (sidesFound+boardEdgesTouching == 4) {
+                    knownField[ogreY][ogreX] = ogre; // so it displays on field
+                    field[ogreY][ogreX] = empty; // so it won't give warnings to the player
+                }
+            }
+
+            if (searchForOgres(field, position) && endMessage == "") { // check for nearby ogres
+                endMessage = "There is an ogre nearby! ";
+            }
+
+            // update the display
+
+            std::pair<int,int> formerPosition = {position.first-difference.first, position.second-difference.second};
+            drawDisplay(knownField, position, justTeleported, formerPosition);
+            
+
+            std::cout << endMessage;
+        }
+
+        if (goblinsFound == totalGoblins) { // print success or fail message
+            std::cout << "\nYou found all " << totalGoblins << " goblins!\n";
+        } else {
+            std::cout << "\nYou found " << goblinsFound << " out of " << totalGoblins << " goblins.\n";
+        }
+        if (isRunning) { // if still running, check if want to play again
+            std::cout << "\nDo you want to play again? y/n ";
+            std::string playAgain;
+            std::cin >> playAgain;
+            if (playAgain != "y") {
                 isRunning = false;
             }
-        } else if (spaceContains == ogre || knownField[position.second][position.first] == ogre) {
-            endMessage = "You have hit an ogre.";
-            isRunning = false;
         }
 
-        if (knownField[position.second][position.first] == " ") { // add the space moved onto to the map
-            knownField[position.second][position.first] = spaceContains;
-        }
-
-        for (int o = 0; o < totalOgres; o++) { // displays ogres on the screen when all four sides are surrounded.
-            int ogreX = ogresX[o];
-            int ogreY = ogresY[o];
-            int sidesFound = 0;
-            int boardEdgesTouching = 0;
-            if (ogreX < fieldSize-1 && (knownField[ogreY][ogreX+1] != " " || field[ogreY][ogreX+1] == ogre)) {
-                sidesFound++;
-            } if (ogreX > 0 && (knownField[ogreY][ogreX-1] != " " || field[ogreY][ogreX-1] == ogre)) {
-                sidesFound++;
-            } if (ogreY < fieldSize-1 && (knownField[ogreY+1][ogreX] != " " || field[ogreY+1][ogreX] == ogre)) {
-                sidesFound++;
-            } if (ogreY > 0 && (knownField[ogreY-1][ogreX] != " " || field[ogreY-1][ogreX] == ogre)) {
-                sidesFound++;
-            }
-            if (ogreY == 0) {
-                boardEdgesTouching++;
-            } if (ogreY == fieldSize-1) {
-                boardEdgesTouching++;
-            } if (ogreX == 0) {
-                boardEdgesTouching++;
-            } if (ogreX == fieldSize-1) {
-                boardEdgesTouching++;
-            }
-            if (sidesFound+boardEdgesTouching == 4) {
-                knownField[ogreY][ogreX] = ogre; // so it displays on field
-                field[ogreY][ogreX] = empty; // so it won't give warnings to the player
-            }
-        }
-
-        if (searchForOgres(field, position) && endMessage == "") { // check for nearby ogres
-            endMessage = "There is an ogre nearby! ";
-        }
-
-        // update the display
-
-        std::pair<int,int> formerPosition = {position.first-difference.first, position.second-difference.second};
-        drawDisplay(knownField, position, justTeleported, formerPosition);
-        
-
-        std::cout << endMessage;
     }
 
-    // following code is outside while loop
-
-    if (goblinsFound == totalGoblins) {
-        std::cout << "\nYou found all " << totalGoblins << " goblins!\n";
-    } else {
-        std::cout << "\nYou found " << goblinsFound << " out of " << totalGoblins << " goblins.\n";
-    }
 
     return 0;
 }
