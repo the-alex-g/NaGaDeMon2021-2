@@ -140,7 +140,7 @@ void displayInformation() { // displays the how to play information
 
 int main () {
     clearScreen();
-    std::cout << bold << green << "G" << gray << "oblin Mines\n" << white << std::flush; // display title for 2 sec
+    std::cout << bold << green << "G" << gray << "oblin Mining\n" << white << std::flush; // display title for 2 sec
     usleep(2000000);
 
     displayInformation(); // show info so player knows what to do
