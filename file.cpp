@@ -140,7 +140,6 @@ void displayInformation() { // displays the how to play information
 
 int main () {
 
-    clearScreen();
     std::cout << bold << green << "G" << gray << "oblin Mines\n" << white << std::flush; // display title for 2 sec
     usleep(2000000);
 
@@ -151,6 +150,7 @@ int main () {
     bool isRunning = true; // while game is running
     
     while (isRunning) {
+        clearScreen();
         std::vector<std::vector<std::string>> field = generateField(); // the entire field
         std::vector<std::vector<std::string>> knownField = generateBlankField(); // the field displayed
 
@@ -306,6 +306,7 @@ int main () {
             std::cin >> playAgain;
             if (playAgain != "y") {
                 isRunning = false;
+                clearScreen();
             }
         }
 
