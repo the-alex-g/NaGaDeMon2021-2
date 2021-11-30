@@ -11,15 +11,15 @@ const std::string goblin = "g"; // character representing goblins
 const std::string ogre = "o"; // character representing ogres
 const std::string empty = "."; // character representing empty space
 const std::string player = "p"; // character representing the player
-const std::string teleportIcon = "@";
+const std::string teleportIcon = "@"; // character used to animate teleportation
 const std::string gameInfo = "Type w a s d to move.\nType 'exit' to stop the program." 
     "\nType \'t\' to teleport. The next time you move, you will skip over a space." 
     "\nYou can only teleport twice!" 
     "\nType i to open this information.\n\nA warning will appear when you are next to an ogre." 
     "\nIf you land on an ogre, you lose." 
-    "\nWhen all spaces next to the ogre are explored or contain other ogres, the ogre will appear as an \'" + orange + ogre + white + "\'." 
-    "\nYou are displayed as a \'" + yellow + player + white + "\'." 
-    "\nThe \'"+green + goblin + white + "\'s are goblins." 
+    "\nWhen all spaces next to the ogre are explored or contain other ogres, the ogre will appear as an \'" + orange + ogre + toDefault + "\'." 
+    "\nYou are displayed as a \'" + yellow + player + toDefault + "\'." 
+    "\nThe \'"+green + goblin + toDefault + "\'s are goblins." 
     "\nFind all the goblins to win.\n\nenter to continue.\n";
 std::vector<int> ogresY;
 std::vector<int> ogresX;
@@ -66,7 +66,7 @@ std::vector<std::vector<std::string>> generateBlankField() { // generates a fiel
 
 
 void updateField(std::vector<std::vector<std::string>> field, std::pair<int, int> position, bool isTeleporting, std::pair<int, int> exclude = {-1,-1}) { // displays field on screen
-    std::cout << " " << underlined << "                     \n" << white;
+    std::cout << " " << underlined << "                     \n" << toDefault;
     for (int c = 0; c < fieldSize; c++) {
         std::vector<std::string> column = field[c];
         std::cout << "| ";
@@ -88,11 +88,11 @@ void updateField(std::vector<std::vector<std::string>> field, std::pair<int, int
                     std::cout << column[r];
                 }
             }
-            std::cout << " " << white;
+            std::cout << " " << toDefault;
         }
         std::cout << "|\n";
     }
-    std::cout << " " << strickenThrough << "                     \n" << white;
+    std::cout << " " << strickenThrough << "                     \n" << toDefault;
 }
 
 
@@ -140,7 +140,7 @@ void displayInformation() { // displays the how to play information
 
 int main () {
     clearScreen();
-    std::cout << bold << green << "G" << gray << "oblin Mining\n" << white << std::flush; // display title for 2 sec
+    std::cout << bold << green << "G" << gray << "oblin Mining\n" << toDefault << std::flush; // display title for 2 sec
     usleep(2000000);
 
     displayInformation(); // show info so player knows what to do
