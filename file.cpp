@@ -20,7 +20,7 @@ const std::string gameInfo = "Type w a s d to move.\nType 'exit' to stop the pro
     "\nWhen all spaces next to the ogre are explored or contain other ogres, the ogre will appear as an \'" + orange + ogre + toDefault + "\'." 
     "\nYou are displayed as a \'" + yellow + player + toDefault + "\'." 
     "\nThe \'"+green + goblin + toDefault + "\'s are goblins." 
-    "\nFind all the goblins to win.\n\nenter to continue.\n";
+    "\nFind all the goblins to win.\n\nenter any character to continue.\n";
 std::vector<int> ogresY;
 std::vector<int> ogresX;
  
@@ -133,7 +133,10 @@ bool searchForOgres(std::vector<std::vector<std::string>> field, std::pair<int, 
 void displayInformation() { // displays the how to play information
     clearScreen();
     std::cout << gameInfo;
-    std::cin.ignore(); // when something is entered, continue
+    std::string var = "NULL";
+    while (var == "NULL") {
+        std::cin >> var; // when anything (other than NULL) is entered, continue
+    }
     clearScreen();
 }
 
@@ -306,6 +309,8 @@ int main () {
             if (playAgain != "y") {
                 isRunning = false;
             }
+        } else {
+            usleep(2000000);
         }
         clearScreen();
         ogresX = {};
